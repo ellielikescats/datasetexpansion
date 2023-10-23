@@ -3,9 +3,9 @@ import pretty_midi as pm
 import numpy as np
 
 # Load the midi file
-# midi_data = music21.converter.parse('/Users/eleanorrow/PycharmProjects/Leadsheet_dataset/lead-sheet-dataset/datasets/pianoroll/z/zabutom/zeta-force---blast-off-into-space/intro_key.mid')
-midi_data = music21.converter.parse('/Users/eleanorrow/PycharmProjects/Leadsheet_dataset/lead-sheet-dataset/datasets/pianoroll/z/zhu/cocaine-model/verse_key.mid')
-#midi_data = pm.PrettyMIDI('/Users/eleanorrow/PycharmProjects/Leadsheet_dataset/lead-sheet-dataset/datasets/pianoroll/z/zabutom/zeta-force---blast-off-into-space/intro_nokey.mid')
+# midi_data = music21.converter.parse('/Users/eleanorrow/PycharmProjects/Leadsheet_dataset/lead-sheet-dataset/datasets/data/z/zabutom/zeta-force---blast-off-into-space/intro_key.mid')
+midi_data = music21.converter.parse('/Users/eleanorrow/PycharmProjects/datasetexpansion/data/z/zhu/cocaine-model/verse_key.mid')
+#midi_data = pm.PrettyMIDI('/Users/eleanorrow/PycharmProjects/Leadsheet_dataset/lead-sheet-dataset/datasets/data/z/zabutom/zeta-force---blast-off-into-space/intro_nokey.mid')
 
 # Get the melody and harmony parts
 for part in midi_data.parts:
@@ -21,6 +21,7 @@ def chord_to_extended_chord(chord, key, tonic, subdominant, dominant):
     bass_note = chord.bass()
     print("Original root note:", root_note.name)
     print("Bass note:", bass_note.name)
+
     if root_note.name != bass_note.name:
         root_note = bass_note
         print("Updated root note to:", root_note.name)
