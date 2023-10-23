@@ -18,6 +18,7 @@ second_part = midi_data.parts[1]
 def chord_to_extended_chord(chord, key, tonic, subdominant, dominant):
     # Get the root note
     root_note = chord.root()
+
     bass_note = chord.bass()
     print("Original root note:", root_note.name)
     print("Bass note:", bass_note.name)
