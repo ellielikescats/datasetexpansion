@@ -15,15 +15,40 @@ for part in midi_data.parts:
 first_part = midi_data.parts[0]
 second_part = midi_data.parts[1]
 
-'''Functions for expanding chords'''
+'''Jazz harmony Functions for expanding chords'''
 
-def add_seventh(root_note,chord):
-    s7th_note = root_note.transpose('M7')
-    chord.add(s7th_note)
-    print(f"Added a 7th note: {s7th_note.name} to the chord")
+def add_fourth(root_note,chord): # use for minor triads
+    fourth_note = root_note.transpose('P4')
+    chord.add(fourth_note)
+    print(f"Added a 4th note: {fourth_note.name} to the chord")
     return
 
-def add_ninth(root_note,chord):
+def add_raised_fourth(root_note,chord): # use for minor triads, need to remove the fifth though
+    raised_fourth_note = root_note.transpose('A4')
+    chord.add(raised_fourth_note)
+    chord.remove(chord.fifth) # does this work to remove the fifth?
+    print(f"Added a raised 4th note: {raised_fourth_note.name} to the chord")
+    return
+
+
+def add_sixth(root_note,chord): # use for major and minor triads
+    sixth_note = root_note.transpose('M6') # - need to check that this is correct transposition
+    chord.add(sixth_note)
+    print(f"Added a 6th note: {sixth_note.name} to the chord")
+    return
+
+def add_major_seventh(root_note,chord): # use for major triads
+    s7th_note = root_note.transpose('M7')
+    chord.add(s7th_note)
+    print(f"Added a major 7th note: {s7th_note.name} to the chord")
+    return
+
+def add_minor_seventh(root_note,chord): # use for minor triads
+    s7th_note = root_note.transpose('m7')
+    chord.add(s7th_note)
+    print(f"Added a minor 7th note: {s7th_note.name} to the chord")
+
+def add_ninth(root_note,chord): # can be used for all chords
     n9th_note = root_note.transpose('M9')
     chord.add(n9th_note)
     print(f"Added a 9th: {n9th_note.name} to the chord")
@@ -34,12 +59,21 @@ def add_eleventh(root_note,chord):
     chord.add(el11th_note)
     print(f"Added an 11th: {el11th_note.name} to the chord")
     return
-def add_thirteenth(root_note,chord):
-    th13th_note = root_note.transpose('M13')
+def add_thirteenth(root_note,chord): # used for dominant 7th chords
+    th13th_note = root_note.transpose('M13') # - need to check that this is correct transposition (should be the same note as 6th)
     chord.add(th13th_note)
     print(f"Added a 13th: {th13th_note.name} to the chord")
     return
 
+''' if it is a ii-V-I progression...
+if it is a major ii-V-I progression:
+
+if it is a minor ii-V-i progression:
+the third note of that chord will be a minor 3rd
+The ii chord has a flatted 5th (aka a “half-diminished” chord) and the V is an altered dominant.
+
+
+'''
 
 ''' need to add:
 - any cluster chords? So this would also be 9ths/11ths/7ths etc I guess
@@ -63,11 +97,11 @@ def chord_to_extended_chord(chord, key, tonic, subdominant, dominant):
         # Add the root note an octave higher
         chord.add(root_note.transpose('P8'))
 
-    # If the chord is a major triad and not the dominant, add the 7th
+    # If the chord is a major triad and not the dominant, add the 7th (major 7th)
     if chord.isMajorTriad() and root_note.name != dominant.name: # eventually want to add some randomness - could use the random module
-        add_seventh(root_note,chord)
+        add_major_seventh(root_note,chord)
 
-    # If the chord is a major triad and the dominant, add the 7th
+    # If the chord is a major triad and the dominant, add the 7th (dominant 7th)
     if chord.isMajorTriad() and root_note.name == dominant.name:
         # Find the dominant 7th note
         dom7th_note = root_note.transpose('M7')
@@ -81,6 +115,8 @@ def chord_to_extended_chord(chord, key, tonic, subdominant, dominant):
         # Add the dominant 7th note to the chord
         chord.add(dom7th_note)
         print(f"Added the dominant 7th note: {dom7th_note.name} to the chord")
+
+    # If the chord is a major triad, add the 7th
 
     return
 
