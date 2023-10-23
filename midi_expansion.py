@@ -15,39 +15,6 @@ for part in midi_data.parts:
 first_part = midi_data.parts[0]
 second_part = midi_data.parts[1]
 
-def chord_to_extended_chord(chord, key, tonic, subdominant, dominant):
-    # Get the root note
-    root_note = chord.root()
-
-    bass_note = chord.bass()
-    print("Original root note:", root_note.name)
-    print("Bass note:", bass_note.name)
-
-    if root_note.name != bass_note.name:
-        root_note = bass_note
-        print("Updated root note to:", root_note.name)
-
-    if chord.quality == 'other':
-        # Add the root note an octave higher
-        chord.add(root_note.transpose('P8'))
-
-    if chord.isMajorTriad() and root_note.name != dominant.name: # want to add some randomness - could use the random module
-        add_seventh(root_note,chord)
-
-    if chord.isMajorTriad() and root_note.name == dominant.name:
-        dom7th_note = root_note.transpose('M7')
-        # If the dominant 7th isn't diatonic, adjust it to fit the key
-        if dom7th_note.name not in key.getScale().getPitches():
-            if key.mode == 'major':
-                dom7th_note = dom7th_note.transpose('-A1')  # lowering by a half step
-            else:
-                # Assuming harmonic minor for simplicity
-                dom7th_note = dom7th_note.transpose('+A1')  # raising by a half step
-        chord.add(dom7th_note)
-        print(f"Added the dominant 7th note: {dom7th_note.name} to the chord")
-    return
-
-
 '''Functions for expanding chords'''
 
 def add_seventh(root_note,chord):
@@ -79,6 +46,45 @@ def add_thirteenth(root_note,chord):
 - potentially identify the ii-V-I progression and add to these chords'''
 
 
+def chord_to_extended_chord(chord, key, tonic, subdominant, dominant):
+    # Get the root and bass note
+    root_note = chord.root()
+    bass_note = chord.bass()
+    print("Original root note:", root_note.name)
+    print("Bass note:", bass_note.name)
+
+    # If the root note is not the same as the bass note, update the root note
+    if root_note.name != bass_note.name:
+        root_note = bass_note
+        print("Updated root note to:", root_note.name)
+
+    # If the chord quality is not defined, add the root note an octave higher
+    if chord.quality == 'other':
+        # Add the root note an octave higher
+        chord.add(root_note.transpose('P8'))
+
+    # If the chord is a major triad and not the dominant, add the 7th
+    if chord.isMajorTriad() and root_note.name != dominant.name: # eventually want to add some randomness - could use the random module
+        add_seventh(root_note,chord)
+
+    # If the chord is a major triad and the dominant, add the 7th
+    if chord.isMajorTriad() and root_note.name == dominant.name:
+        # Find the dominant 7th note
+        dom7th_note = root_note.transpose('M7')
+        # If the dominant 7th isn't diatonic, adjust it to fit the key
+        if dom7th_note.name not in key.getScale().getPitches():
+            if key.mode == 'major':
+                dom7th_note = dom7th_note.transpose('-A1')  # lowering by a half step
+            else:
+                # Assuming harmonic minor for simplicity
+                dom7th_note = dom7th_note.transpose('+A1')  # raising by a half step
+        # Add the dominant 7th note to the chord
+        chord.add(dom7th_note)
+        print(f"Added the dominant 7th note: {dom7th_note.name} to the chord")
+
+    return
+
+
 '''Functions for expanding melody'''
 
 # Inspect the first 5 notes of the first part
@@ -104,6 +110,7 @@ for chord in second_part.flat.getElementsByClass(music21.chord.Chord):
     print(f"Chord: {chord} | Quality: {chord.quality}")
     # Extend the chord to dominant 7th
     chord_to_extended_chord(chord, music_key, tonic, subdominant, dominant)
+
 
 
 # Export the new MIDI file containing both parts
